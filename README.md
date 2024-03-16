@@ -336,5 +336,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => {
 These steps demonstrate the implementation of the chat input component along with necessary backend logic to handle incoming messages and send responses.
 </details>
 
+---
+<details>
+   <summary>Setting up API Routes</summary>
+
+![image](https://github.com/Akmeena4u/BookishBot-ChatBot/assets/93425334/b3636067-b200-4bbf-a8f3-4b80a69f202a)
+
+</details>
 
  
