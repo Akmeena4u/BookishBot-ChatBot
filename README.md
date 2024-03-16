@@ -180,5 +180,161 @@ Including the libs/util/utils.ts file ensures that the utility function for merg
 These steps provide a comprehensive overview of integrating the chat component, setting up metadata, utilizing a UI library, customizing components, and preparing the chat interface with necessary content placeholders and user interaction elements. Each component plays a crucial role in creating a functional and user-friendly chat interface tailored for bookstore-related inquiries.
 </details>
 
+---
+<details>
+   <summary>Creating the Chat Input Component</summary>
+
+
+### Creating the Chat Input Component
+
+The chat input component will be responsible for allowing users to input messages in the chat interface. This component will demonstrate core concepts of modern web development including React Context for sharing state between components and React Query for data fetching.
+
+#### Step 1: Define Props Interface (Typescript Specific)
+
+```typescript
+// ChatInput.tsx
+
+interface ChatInputProps extends React.HTMLAttributes<HTMLDivElement> {
+  // Custom props can be added here
+}
+```
+
+#### Step 2: Implement the Chat Input Component
+
+```tsx
+// ChatInput.tsx
+
+import React, { useState } from 'react';
+import { TextAreaAutoSize } from 'react-textarea-autosize'; // Assuming you've installed this package
+
+const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => {
+  const [input, setInput] = useState('');
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const sendMessage = async () => {
+    // Logic to send message to API endpoint
+    // Example: Use fetch or Axios to send message
+    try {
+      const response = await fetch('/api/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: input }),
+      });
+      if (response.ok) {
+        // Handle success
+      } else {
+        // Handle error
+      }
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  return (
+    <div className={`relative mt-4 flex-1 overflow-hidden rounded-lg border-none outline-none ${className}`} {...props}>
+      <TextAreaAutoSize
+        rows={2}
+        maxRows={4}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Write a message..."
+        className="w-full p-4 resize-none bg-gray-100 text-gray-900 focus:ring-0 focus:text-sm focus:leading-6"
+        autoFocus
+      />
+    </div>
+  );
+};
+
+export default ChatInput;
+```
+
+#### Step 3: Implement API Endpoint (Server-side)
+
+In your Next.js API route (usually located in `pages/api` directory), implement the `/api/message` endpoint to handle incoming messages.
+
+```javascript
+// pages/api/message.js
+
+export default function handler(req, res) {
+  if (req.method === 'POST') {
+    // Handle incoming message
+    const { text } = req.body;
+
+    // Example: Process the message and return a response
+    const responseMessage = `Received message: ${text}`;
+    
+    // Return a response (in this case, echoing back the received message)
+    res.status(200).json({ message: responseMessage });
+  } else {
+    res.status(405).json({ error: 'Method Not Allowed' });
+  }
+}
+```
+
+#### Step 4: Implement React Query for Sending Messages
+
+```tsx
+// ChatInput.tsx
+
+import { useMutation } from 'react-query'; // Assuming you've installed this package
+
+const ChatInput: React.FC<ChatInputProps> = ({ className, ...props }) => {
+  const [input, setInput] = useState('');
+  const sendMessageMutation = useMutation(sendMessage);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessageMutation.mutate(input);
+    }
+  };
+
+  const sendMessage = async (message: string) => {
+    try {
+      const response = await fetch('/api/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: message }),
+      });
+      if (response.ok) {
+        // Handle success
+      } else {
+        // Handle error
+      }
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  return (
+    // JSX code remains the same
+  );
+};
+```
+
+### Explanation:
+
+1. **Props Interface**: Defines the props interface `ChatInputProps` which extends `HTMLAttributes<HTMLDivElement>` to allow passing custom class names and other HTML attributes.
+
+2. **Chat Input Component**: Implements the `ChatInput` component which consists of a resizable text area for typing messages. It handles sending messages on pressing the Enter key.
+
+3. **API Endpoint**: Implements the server-side API endpoint (`/api/message`) using Next.js API routes to handle incoming messages. It receives the message from the client and returns a response.
+
+4. **React Query for Sending Messages**: Integrates React Query's `useMutation` hook to handle sending messages asynchronously. It provides a cleaner way to manage loading states and error handling for the message sending process.
+
+These steps demonstrate the implementation of the chat input component along with necessary backend logic to handle incoming messages and send responses.
+</details>
+
 
  
